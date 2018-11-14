@@ -1,0 +1,40 @@
+<view class='output-area'>
+  <view class='expression'>64 × 83</view>
+  <view class='result'>= 5,312</view>
+</view>
+
+<view class='input-area flex flex-dr-col'>
+  <view class='flex row'>
+    <button class='bd-r btn-clear'>C</button>
+    <button class='bd-r color-light'>
+      <image src='/images/backspace.png'></image>
+    </button>
+    <button class='bd-r'>
+      <image src='/images/history-record.png'></image>
+    </button>
+    <button class='color-light'>÷</button>
+  </view>
+  <view class='flex row'>
+    <button class='bd-r'>7</button>
+    <button class='bd-r'>8</button>
+    <button class='bd-r'>9</button>
+    <button class='color-light'>×</button>
+  </view>
+  <view class='flex row'>
+    <button class='bd-r'>4</button>
+    <button class='bd-r'>2</button>
+    <button class='bd-r'>6</button>
+    <button class='color-light'>-</button>
+  </view>
+  <view class='flex row'>
+    <button class='bd-r'>1</button>
+    <button class='bd-r'>2</button>
+    <button class='bd-r'>3</button>
+    <button class='color-light'>+</button>
+  </view>
+  <view class='flex row'>
+    <button class='bd-r col-2'>0</button>
+    <button class='bd-r'>.</button>
+    <button class='btn-equal' hover-class='press'>=</button>
+  </view>
+</view>

@@ -1,0 +1,74 @@
+page {
+  width: 100%;
+  height: 100%;
+}
+
+.output-area {
+  height: 30%;
+  background-color: #f0f0f0;
+  text-align: right;
+  flex-wrap: wrap;
+}
+
+.input-area {
+  height: 70%;
+  width: 100%;
+  background-color: #fff;
+}
+
+.expression {
+  font-size: 50rpx;
+  color: #5d5d5d;
+  padding-top: 90rpx;
+  margin: 0 50rpx 50rpx 0;
+}
+
+.result {
+  font-size: 80rpx;
+  margin-right: 50rpx;
+  color: #333;
+}
+
+.input-area .row {
+  flex: 0 0 20%;
+}
+
+.input-area button {
+  flex-basis: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50rpx;
+  border-top: solid 1px #f0f0f0;
+  color: #333;
+}
+
+.bd-r {
+  border-right: solid 1px #f0f0f0;
+}
+
+.flex .row .col-2 {
+  flex-basis: 50%;
+}
+
+button.btn-equal {
+  background-color: #fb7730;
+  color: #fff;
+}
+
+button.press {
+  background-color: #c63;
+}
+
+button.color-light {
+  color: #5d5d5d;
+}
+
+.input-area button image {
+  width: 50rpx;
+  height: 50rpx;
+}
+
+button.btn-clear {
+  color: #fb7730;
+}
