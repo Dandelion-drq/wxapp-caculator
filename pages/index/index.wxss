@@ -39,12 +39,12 @@ page {
   align-items: center;
   justify-content: center;
   font-size: 50rpx;
-  border-top: solid 1px #f0f0f0;
+  border-top: solid 1px #ddd;
   color: #333;
 }
 
 .bd-r {
-  border-right: solid 1px #f0f0f0;
+  border-right: solid 1px #ddd;
 }
 
 .flex .row .col-2 {
