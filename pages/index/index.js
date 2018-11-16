@@ -36,13 +36,15 @@ Page({
 
     } else if (btnId === '.') { // 小数点
 
-      // 每个操作数只会包含一个小数点，需要判断
-      const lastNum = this.getLastEnterNum();
-      if (lastNum.indexOf('.') === -1) {
-        this.addValidEnter('.');
-      }
+      if (!this.data.isCalculated) {
+        // 每个操作数只会包含一个小数点，需要判断
+        const lastNum = this.getLastEnterNum();
+        if (lastNum.indexOf('.') === -1) {
+          this.addValidEnter('.');
+        }
 
-      this.setCalculated(false);
+        this.setCalculated(false);
+      }
 
     } else {
 
