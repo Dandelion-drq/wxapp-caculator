@@ -5,7 +5,7 @@ Page({
     isCalculated: true, // 标记当前表达式是否已计算完毕
     lastInputChar: null
   },
-  onLoad: function () {
+  onLoad: function() {
 
   },
   clickBtn(event) {
@@ -31,9 +31,8 @@ Page({
     } else if (btnId === '.') { // 小数点
 
       // 每个操作数只会包含一个小数点，需要判断
-      const arr = this.data.output.split(/[+|\-|×|÷]/g).filter(d => d) /*去除空值*/ ;
-      const last = arr[arr.length - 1]; // 取出最后输入的操作数
-      if (last.indexOf('.') === -1) {
+      const lastNum = this.getLastEnterNum();
+      if (lastNum.indexOf('.') === -1) {
         this.addValidEnter('.');
       }
 
@@ -67,7 +66,16 @@ Page({
             this.addValidEnter(btnId);
           }
         }
-      } else { // 输入数字或小数点
+      } else { // 输入数字
+      const lastNum = this.getLastEnterNum();
+        // 如果最后一个输入是0开头的数字，此时再输入数字的话把0替换掉
+        if (lastNum === '0' && !this.data.lastInputChar.match(/[+|\-|×|÷]/)) { 
+          const val = this.data.output;
+          this.setData({
+            output: val.substring(0, val.length - 1)
+          })
+        }
+
         this.addValidEnter(btnId);
       }
 
@@ -91,5 +99,12 @@ Page({
       output: this.data.output + val,
       lastInputChar: val
     })
+  },
+  /**
+   * 获取表达式中最后输入的操作数
+   */
+  getLastEnterNum() {
+    const arr = this.data.output.split(/[+|\-|×|÷]/g).filter(d => d); // 根据操作符分割字符串并去掉空结果
+    return arr[arr.length - 1]; // 取出最后输入的操作数
   }
 })
