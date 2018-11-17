@@ -3,7 +3,7 @@ Page({
     expression: '',
     output: '0',
     isCalculated: true, // 标记当前表达式是否已计算完毕
-    lastInputChar: null
+    lastInputChar: ''
   },
   onLoad: function() {
 
@@ -31,9 +31,22 @@ Page({
 
     } else if (btnId === '=') { // 计算结果
       if (!this.data.isCalculated) {
-        this.calculate();
-      }
+        const expression = this.data.output;        
+        let result = this.calculate(expression);
 
+        // 结果的长度限制一下
+        result = '= ' + result; // 剩下最后的一个操作数就是结果
+        if (result.length > 15) {
+          result = result.substring(0, 15);
+        }
+
+        this.setData({
+          expression: expression,
+          output: result,
+          isCalculated: true,
+          lastInputChar: ''
+        })
+      }
     } else if (btnId === '.') { // 小数点
 
       if (!this.data.isCalculated) {
@@ -120,13 +133,17 @@ Page({
     return arr[arr.length - 1]; // 取出最后输入的操作数
   },
   /**
-   * 计算结果（按‘=’时触发）
+   * 计算结果并返回（按‘=’时触发）
    */
-  calculate() {
-    const expression = this.data.output;
+  calculate(expression) {
     const operators = expression.match(/[+|\-|×|÷]/g); // 运算符数组
     const nums = expression.split(/[+|\-|×|÷]/g).filter(d => d).map(Number); // 运算参数数组
 
+    // 没有输入操作符
+    if (!operators) {
+      return Number(expression);
+    }
+    
     // 如果表达式的最后一个输入是操作符，舍弃掉这个操作符
     if (operators.length >= nums.length) {
       operators.pop();
@@ -163,18 +180,6 @@ Page({
       nums.splice(i, 2, val); // 计算完的结果替换原来的两个参数
     }
 
-    // 结果的长度限制一下
-    let result = '= ' + nums[0];
-    if (result.length > 15) {
-      result = result.substring(0, 15);
-    }
-
-    // 剩下最后的一个操作数就是结果
-    this.setData({
-      expression: expression,
-      output: result,
-      isCalculated: true,
-      lastInputChar: null
-    })
+    return nums[0]; // 剩下最后的一个操作数就是结果
   }
 })
