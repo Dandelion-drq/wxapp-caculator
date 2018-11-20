@@ -31,7 +31,7 @@ Page({
 
     } else if (btnId === '=') { // 计算结果
       if (!this.data.isCalculated) {
-        const expression = this.data.output;        
+        const expression = this.data.output;
         let result = this.calculate(expression);
 
         // 结果的长度限制一下
@@ -59,7 +59,40 @@ Page({
         this.setCalculated(false);
       }
 
-    } else {
+    } else if (btnId === '+' || btnId === '-' || btnId === '×' || btnId === '÷') { // 输入的是操作符
+
+      // 如果已经计算完毕，则相当于对上一次计算出的结果进行继续的计算
+      if (this.data.isCalculated) {
+        this.setData({
+          output: this.data.output.substring(2, this.data.output.length), // 因为this.data.output显示为形如“= xxx”的格式，所以从2开始取
+          expression: ''
+        })
+      }
+
+      // 没有任何输入的情况下第一个输入了操作符，那就默认把第一个操作数设为0
+      if (this.data.output === '') {
+        this.setData({
+          output: '0'
+        })
+      } else {
+        let match = this.data.lastInputChar.match(/[+|\-|×|÷]/);
+        // 如果连续输入两个操作符，就替换上一个操作符
+        if (match && match.index === 0) {
+          let val = this.data.output;
+          val = val.substring(0, val.length - 1) + btnId;
+          this.setData({
+            output: val,
+            lastInputChar: btnId
+          });
+        } else {
+          this.addValidEnter(btnId);
+        }
+      }
+
+      // 有新的输入要重置一下isCalculated值
+      this.setCalculated(false);
+
+    } else { // 输入数字
 
       // 如果已经计算完毕，把output值清空，去掉0占位字符
       if (this.data.isCalculated) {
@@ -69,40 +102,16 @@ Page({
         })
       }
 
-      if (btnId === '+' || btnId === '-' || btnId === '×' || btnId === '÷') { // 输入的是操作符
-
-        // 没有任何输入的情况下第一个输入了操作符，那就默认把第一个操作数设为0
-        if (this.data.output === '') {
-          this.setData({
-            output: '0'
-          })
-        } else {
-          let match = this.data.lastInputChar.match(/[+|\-|×|÷]/);
-          // 如果连续输入两个操作符，就替换上一个操作符
-          if (match && match.index === 0) {
-            let val = this.data.output;
-            val = val.substring(0, val.length - 1) + btnId;
-            this.setData({
-              output: val,
-              lastInputChar: btnId
-            });
-          } else {
-            this.addValidEnter(btnId);
-          }
-        }
-
-      } else { // 输入数字
-        const lastNum = this.getLastEnterNum();
-        // 如果最后一个输入是0开头的数字，此时再输入数字的话把0替换掉
-        if (lastNum === '0' && !this.data.lastInputChar.match(/[+|\-|×|÷]/)) {
-          const val = this.data.output;
-          this.setData({
-            output: val.substring(0, val.length - 1)
-          })
-        }
-
-        this.addValidEnter(btnId);
+      const lastNum = this.getLastEnterNum();
+      // 如果最后一个输入是0开头的数字，此时再输入数字的话把0替换掉
+      if (lastNum === '0' && !this.data.lastInputChar.match(/[+|\-|×|÷]/)) {
+        const val = this.data.output;
+        this.setData({
+          output: val.substring(0, val.length - 1)
+        })
       }
+
+      this.addValidEnter(btnId);
 
       // 有新的输入要重置一下isCalculated值
       this.setCalculated(false);
@@ -143,7 +152,7 @@ Page({
     if (!operators) {
       return Number(expression);
     }
-    
+
     // 如果表达式的最后一个输入是操作符，舍弃掉这个操作符
     if (operators.length >= nums.length) {
       operators.pop();
