@@ -5,116 +5,122 @@ Page({
     isCalculated: true, // 标记当前表达式是否已计算完毕
     lastInputChar: ''
   },
-  onLoad: function() {
+  onLoad: function () {
 
   },
   clickBtn(event) {
     const btnId = event.target.id;
 
-    // 分辨判断不同的按钮执行不同的操作
-    if (btnId === 'clear') { // 清空
-      this.setData({
-        expression: '',
-        output: '0',
-        isCalculated: true
-      })
-
-    } else if (btnId === 'backspace') { // 退格
-      if (!this.data.isCalculated) {
+    // 判断不同的按钮执行不同的操作
+    switch (btnId) {
+      case 'clear': // 清空
         this.setData({
-          output: this.data.output.substring(0, this.data.output.length - 1)
+          expression: '',
+          output: '0',
+          isCalculated: true
         })
-      }
+        break;
 
-    } else if (btnId === 'history') { // 查看历史
-      // todo: 跳转到历史页面
-
-    } else if (btnId === '=') { // 计算结果
-      if (!this.data.isCalculated) {
-        const expression = this.data.output;
-        let result = this.calculate(expression);
-
-        // 结果的长度限制一下
-        result = '= ' + result; // 剩下最后的一个操作数就是结果
-        if (result.length > 15) {
-          result = result.substring(0, 15);
-        }
-
-        this.setData({
-          expression: expression,
-          output: result,
-          isCalculated: true,
-          lastInputChar: ''
-        })
-      }
-    } else if (btnId === '.') { // 小数点
-
-      if (!this.data.isCalculated) {
-        // 每个操作数只会包含一个小数点，需要判断
-        const lastNum = this.getLastEnterNum();
-        if (lastNum.indexOf('.') === -1) {
-          this.addValidEnter('.');
-        }
-
-        this.setCalculated(false);
-      }
-
-    } else if (btnId === '+' || btnId === '-' || btnId === '×' || btnId === '÷') { // 输入的是操作符
-
-      // 如果已经计算完毕，则相当于对上一次计算出的结果进行继续的计算
-      if (this.data.isCalculated) {
-        this.setData({
-          output: this.data.output.substring(2, this.data.output.length), // 因为this.data.output显示为形如“= xxx”的格式，所以从2开始取
-          expression: ''
-        })
-      }
-
-      // 没有任何输入的情况下第一个输入了操作符，那就默认把第一个操作数设为0
-      if (this.data.output === '') {
-        this.setData({
-          output: '0'
-        })
-      } else {
-        let match = this.data.lastInputChar.match(/[+|\-|×|÷]/);
-        // 如果连续输入两个操作符，就替换上一个操作符
-        if (match && match.index === 0) {
-          let val = this.data.output;
-          val = val.substring(0, val.length - 1) + btnId;
+      case 'backspace': // 退格
+        if (!this.data.isCalculated) {
           this.setData({
-            output: val,
-            lastInputChar: btnId
-          });
-        } else {
-          this.addValidEnter(btnId);
+            output: this.data.output.substring(0, this.data.output.length - 1)
+          })
         }
-      }
+        break;
 
-      // 有新的输入要重置一下isCalculated值
-      this.setCalculated(false);
+      case '=': // 计算结果
+        if (!this.data.isCalculated) {
+          const expression = this.data.output;
+          let result = this.calculate(expression);
 
-    } else { // 输入数字
+          // 结果的长度限制一下
+          result = '= ' + result; // 剩下最后的一个操作数就是结果
+          if (result.length > 15) {
+            result = result.substring(0, 15);
+          }
 
-      // 如果已经计算完毕，把output值清空，去掉0占位字符
-      if (this.data.isCalculated) {
-        this.setData({
-          output: '',
-          expression: ''
-        })
-      }
+          this.setData({
+            expression: expression,
+            output: result,
+            isCalculated: true,
+            lastInputChar: ''
+          })
+        }
+        break;
 
-      const lastNum = this.getLastEnterNum();
-      // 如果最后一个输入是0开头的数字，此时再输入数字的话把0替换掉
-      if (lastNum === '0' && !this.data.lastInputChar.match(/[+|\-|×|÷]/)) {
-        const val = this.data.output;
-        this.setData({
-          output: val.substring(0, val.length - 1)
-        })
-      }
+      case '.': // 小数点
+        if (!this.data.isCalculated) {
+          // 每个操作数只会包含一个小数点，需要判断
+          const lastNum = this.getLastEnterNum();
+          if (lastNum.indexOf('.') === -1) {
+            this.addValidEnter('.');
+          }
 
-      this.addValidEnter(btnId);
+          this.setCalculated(false);
+        }
+        break;
 
-      // 有新的输入要重置一下isCalculated值
-      this.setCalculated(false);
+      // 操作符
+      case '+':
+      case '-':
+      case '×':
+      case '÷':
+        // 如果已经计算完毕，则相当于对上一次计算出的结果进行继续的计算
+        if (this.data.isCalculated) {
+          this.setData({
+            output: this.data.output.substring(2, this.data.output.length), // 因为this.data.output显示为形如“= xxx”的格式，所以从2开始取
+            expression: ''
+          })
+        }
+
+        // 没有任何输入的情况下第一个输入了操作符，那就默认把第一个操作数设为0
+        if (this.data.output === '') {
+          this.setData({
+            output: '0'
+          })
+        } else {
+          let match = this.data.lastInputChar.match(/[+|\-|×|÷]/);
+          // 如果连续输入两个操作符，就替换上一个操作符
+          if (match && match.index === 0) {
+            let val = this.data.output;
+            val = val.substring(0, val.length - 1) + btnId;
+            this.setData({
+              output: val,
+              lastInputChar: btnId
+            });
+          } else {
+            this.addValidEnter(btnId);
+          }
+        }
+
+        // 有新的输入要重置一下isCalculated值
+        this.setCalculated(false);
+        break;
+
+      default: // 数字
+        // 如果已经计算完毕，把output值清空，去掉0占位字符
+        if (this.data.isCalculated) {
+          this.setData({
+            output: '',
+            expression: ''
+          })
+        }
+
+        const lastNum = this.getLastEnterNum();
+        // 如果最后一个输入是0开头的数字，此时再输入数字的话把0替换掉
+        if (lastNum === '0' && !this.data.lastInputChar.match(/[+|\-|×|÷]/)) {
+          const val = this.data.output;
+          this.setData({
+            output: val.substring(0, val.length - 1)
+          })
+        }
+
+        this.addValidEnter(btnId);
+
+        // 有新的输入要重置一下isCalculated值
+        this.setCalculated(false);
+        break;
     }
   },
   /**
