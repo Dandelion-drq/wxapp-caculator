@@ -5,12 +5,10 @@
 
 <view class='input-area flex flex-dr-col' bindtap='clickBtn'>
   <view class='flex row'>
-    <button class='bd-r btn-clear' id='clear'>C</button>
+    <button class='bd-r color-light' id='('>(</button>
+    <button class='bd-r color-light' id=')'>)</button>    
     <button class='bd-r color-light' id='backspace'>
       <image src='/images/backspace.png'></image>
-    </button>
-    <button class='bd-r' id='history'>
-      <image src='/images/history-record.png'></image>
     </button>
     <button class='color-light' id='÷'>÷</button>
   </view>
@@ -33,7 +31,8 @@
     <button class='color-light' id='+'>+</button>
   </view>
   <view class='flex row'>
-    <button class='bd-r col-2' id='0'>0</button>
+    <button class='bd-r btn-clear' id='clear'>C</button>
+    <button class='bd-r' id='0'>0</button>
     <button class='bd-r' id='.'>.</button>
     <button class='btn-equal' hover-class='press' id='='>=</button>
   </view>

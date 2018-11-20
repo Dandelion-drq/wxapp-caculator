@@ -17,7 +17,8 @@ Page({
         this.setData({
           expression: '',
           output: '0',
-          isCalculated: true
+          isCalculated: true,
+          lastInputChar: ''
         })
         break;
 
@@ -30,7 +31,7 @@ Page({
         break;
 
       case '=': // 计算结果
-        if (!this.data.isCalculated) {
+        if (!this.data.isCalculated && this.data.lastInputChar !== '(') {
           const expression = this.data.output;
           let result = this.calculate(expression);
 
@@ -50,15 +51,32 @@ Page({
         break;
 
       case '.': // 小数点
-        if (!this.data.isCalculated) {
+        if (!this.data.isCalculated && this.data.lastInputChar !== '(' && this.data.lastInputChar !== ')') {
           // 每个操作数只会包含一个小数点，需要判断
           const lastNum = this.getLastEnterNum();
           if (lastNum.indexOf('.') === -1) {
             this.addValidEnter('.');
           }
-
-          this.setCalculated(false);
         }
+        break;
+
+      case '(': // 左括号
+        if (this.data.isCalculated) {
+          this.setData({
+            output: '(',
+            expression: '',
+            lastInputChar: '(',
+            isCalculated: false
+          })
+        } else if (this.data.lastInputChar.match(/[+|\-|×|÷|(]/)) {
+          this.addValidEnter(btnId);
+        }
+        
+        break;
+
+      case ')': // 右括号
+        if (this.data.lastInputChar.match(/[+|\-|×|÷|(|)]/)) break;
+        this.addValidEnter(btnId);
         break;
 
       // 操作符
@@ -66,6 +84,9 @@ Page({
       case '-':
       case '×':
       case '÷':
+
+        if (this.data.lastInputChar === '(') break; // 操作符不能跟在'('后面
+
         // 如果已经计算完毕，则相当于对上一次计算出的结果进行继续的计算
         if (this.data.isCalculated) {
           this.setData({
@@ -93,12 +114,12 @@ Page({
             this.addValidEnter(btnId);
           }
         }
-
-        // 有新的输入要重置一下isCalculated值
-        this.setCalculated(false);
+        
         break;
 
       default: // 数字
+        if (this.data.lastInputChar === ')') break;
+
         // 如果已经计算完毕，把output值清空，去掉0占位字符
         if (this.data.isCalculated) {
           this.setData({
@@ -118,18 +139,8 @@ Page({
 
         this.addValidEnter(btnId);
 
-        // 有新的输入要重置一下isCalculated值
-        this.setCalculated(false);
         break;
     }
-  },
-  /**
-   * 设置isCalculated值
-   */
-  setCalculated(val) {
-    this.setData({
-      isCalculated: val
-    })
   },
   /**
    * 输入一个合法字符
@@ -139,6 +150,13 @@ Page({
       output: this.data.output + val,
       lastInputChar: val
     })
+
+    // 有新的输入要重置一下isCalculated值
+    if (this.data.isCalculated) {
+      this.setData({
+        isCalculated: false
+      })
+    }
   },
   /**
    * 获取表达式中最后输入的操作数
