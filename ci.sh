@@ -1,0 +1,1 @@
+miniprogram-ci preview --pp . --pkp ./private.wx414d8a4718cad505.key --appid wx414d8a4718cad505 --uv 1.0.0 -r 1 --enable-es6 true --qrcode-format image --qrcode-output-dest './preview-qrcode.jpg'
