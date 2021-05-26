@@ -5,7 +5,7 @@ A simple caculator app build in wechat mini-program.
 一个简易的计算器微信小程序。
 
 # Preview
-![](/preview.gif)
+![](./preview.gif)
 
 # Setup
 
