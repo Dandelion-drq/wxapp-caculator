@@ -9,6 +9,13 @@ const project = new ci.Project({
     ignores: ['node_modules/**/*'],
 })
 
+const projectSetting = {
+    es6: true,
+    es7: true,
+    minify: true,
+    autoPrefixWXSS: true
+}
+
 // 预览
 async function preview() {
     console.log('生成预览二维码中...')
@@ -16,18 +23,12 @@ async function preview() {
     let qrcodePath = './preview-qrcode.jpg'
     const previewResult = await ci.preview({
         project,
-        desc: 'ci预览 ' + (new Date()).toLocaleString(), // 此备注将显示在“小程序助手”开发版列表中
-        setting: {
-            es6: true,
-            es7: true,
-            minify: true,
-            codeProtect: true,
-            autoPrefixWXSS: true
-        },
+        desc: 'ci预览 ' + Date().toString(), // 此备注将显示在“小程序助手”开发版列表中
+        setting: projectSetting,
         qrcodeFormat: 'image',
         qrcodeOutputDest: './preview-qrcode.jpg',
         // onProgressUpdate: console.log,
-        // pagePath: 'pages/index/index', // 预览页面
+        pagePath: 'pages/index/index', // 预览页面
         // searchQuery: 'a=1&b=2',  // 预览参数 [注意!]这里的`&`字符在命令行中应写成转义字符`\&`
     })
     console.log('二维码生成成功，路径：' + qrcodePath)
@@ -41,13 +42,7 @@ async function upload() {
         project,
         version: '1.0.0',
         desc: 'ci上传 ' + Date().toString(), // 此备注将显示在“小程序助手”开发版列表中
-        setting: {
-            es6: true,
-            es7: true,
-            minify: true,
-            codeProtect: true,
-            autoPrefixWXSS: true
-        },
+        setting: projectSetting,
         // onProgressUpdate: console.log,
     })
 
@@ -58,9 +53,8 @@ async function upload() {
 async function buildNpm() {
     console.log('开始构建npm包...')
 
-    // 在有需要的时候
     const warning = await ci.packNpm(project, {
-        // ignores: ['pack_npm_ignore_list'],
+        ignores: ['pack_npm_ignore_list'],
         reporter: (infos) => { console.log(infos) }
     })
     console.warn(warning)
